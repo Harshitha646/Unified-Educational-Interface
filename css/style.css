@@ -1,0 +1,437 @@
+/* ================= GLOBAL ================= */
+
+body{
+font-family:'Poppins', sans-serif;
+background:#f4f6f9;
+margin:0;
+}
+
+
+/* ================= LOGIN PAGE ================= */
+
+.login-body{
+margin:0;
+font-family:'Poppins', sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+.login-container{
+display:flex;
+width:850px;
+height:450px;
+background:white;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+overflow:hidden;
+}
+
+.login-left{
+flex:1;
+background:linear-gradient(135deg,#0f4c81,#1b6ca8);
+color:white;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:40px;
+text-align:center;
+}
+
+.login-card{
+flex:1;
+padding:40px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.login-card h2{
+margin-bottom:20px;
+}
+
+.login-card label{
+font-weight:bold;
+margin-top:10px;
+}
+
+.login-card input{
+width:100%;
+padding:10px;
+margin-top:5px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.login-card button{
+margin-top:20px;
+padding:10px;
+border:none;
+background:#667eea;
+color:white;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+.login-card button:hover{
+background:#5563d1;
+}
+
+
+/* ================= DASHBOARD ================= */
+
+.dashboard{
+display:flex;
+min-height:100vh;
+}
+
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+width:220px;
+background:#2c3e50;
+color:white;
+padding:20px;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:30px;
+}
+
+.sidebar ul{
+list-style:none;
+padding:0;
+}
+
+.sidebar ul li{
+margin:12px 0;
+}
+
+.sidebar ul li a{
+display:block;
+padding:10px;
+color:white;
+text-decoration:none;
+border-radius:6px;
+transition:0.3s;
+}
+
+.sidebar ul li a:hover{
+background:#34495e;
+padding-left:15px;
+}
+
+.sidebar ul li a.active{
+background:#1abc9c;
+}
+
+.logout-btn{
+margin-top:20px;
+padding:10px;
+width:100%;
+border:none;
+background:#e74c3c;
+color:white;
+cursor:pointer;
+border-radius:6px;
+}
+
+
+/* ================= MAIN CONTENT ================= */
+
+.main-content{
+flex:1;
+padding:40px;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+
+/* ================= HEADER ================= */
+
+.header{
+text-align:center;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:36px;
+font-weight:700;
+color:#2c3e50;
+}
+
+.header h1::after{
+content:"";
+display:block;
+width:80px;
+height:4px;
+background:#3498db;
+margin:10px auto;
+border-radius:2px;
+}
+
+
+/* ================= DASHBOARD CARDS ================= */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(2,300px);
+justify-content:center;
+gap:30px;
+margin-top:30px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card-link{
+text-decoration:none;
+color:inherit;
+}
+
+.card-link .card{
+cursor:pointer;
+transition:0.3s;
+}
+
+.card-link .card:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+
+
+/* ================= BUTTONS ================= */
+
+.download-btn{
+margin-top:10px;
+padding:8px 14px;
+border:none;
+background:#3498db;
+color:white;
+border-radius:6px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.download-btn:hover{
+background:#2980b9;
+transform:scale(1.05);
+}
+
+.submit-btn{
+margin-top:20px;
+padding:12px;
+background:#3498db;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:15px;
+}
+
+.submit-btn:hover{
+background:#2980b9;
+}
+
+
+/* ================= ASSIGNMENT PAGE ================= */
+
+.assignment-card{
+width:600px;
+margin-top:20px;
+padding:30px;
+border-radius:12px;
+background:white;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.assignment-form{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.assignment-form label{
+font-weight:600;
+color:#2c3e50;
+}
+
+.assignment-form select,
+.assignment-form input[type="file"]{
+padding:12px;
+border-radius:8px;
+border:1px solid #ccc;
+width:100%;
+}
+
+
+/* ================= ANNOUNCEMENT ================= */
+
+.announcement-card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+.announcement-card h3{
+color:#3498db;
+margin-bottom:10px;
+}
+
+.announcement-card p{
+color:#555;
+}
+
+.back-btn{
+display:inline-block;
+margin-top:20px;
+padding:10px 20px;
+background:#3498db;
+color:white;
+text-decoration:none;
+border-radius:6px;
+}
+
+
+/* ================= FEEDBACK ================= */
+
+.feedback-card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+max-width:500px;
+margin:auto;
+}
+
+.feedback-form{
+display:flex;
+flex-direction:column;
+}
+
+.feedback-form label{
+margin-top:15px;
+font-weight:600;
+color:#34495e;
+}
+
+.feedback-form input,
+.feedback-form textarea{
+margin-top:5px;
+padding:10px;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:14px;
+}
+
+
+/* ================= TOP NAVBAR ================= */
+
+.top-navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:white;
+padding:12px 20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+margin-bottom:25px;
+width:100%;
+}
+
+.nav-title{
+font-size:18px;
+font-weight:600;
+color:#2c3e50;
+}
+
+.nav-right{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.user-profile{
+font-size:14px;
+background:#ecf0f1;
+padding:6px 14px;
+border-radius:20px;
+}
+
+.notification{
+position:relative;
+font-size:20px;
+cursor:pointer;
+}
+
+.badge{
+position:absolute;
+top:-5px;
+right:-8px;
+background:red;
+color:white;
+font-size:10px;
+padding:3px 6px;
+border-radius:50%;
+}
+
+
+/* ================= PORTAL TITLE ================= */
+
+.portal-title{
+font-size:42px;
+font-weight:700;
+color:#150a6b;
+text-align:center;
+margin-bottom:10px;
+}
+
+.portal-title::after{
+content:"";
+display:block;
+width:80px;
+height:4px;
+background:white;
+margin:10px auto;
+border-radius:4px;
+}
+
+.portal-subtitle{
+color:#f1f1f1;
+font-size:17px;
+text-align:center;
+margin-top:10px;
+}
+
+.announcement-link{
+text-decoration:none;
+color:inherit;
+display:block;
+}
+
+.announcement-card:hover{
+transform:translateY(-4px);
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}

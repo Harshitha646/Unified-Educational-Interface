@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>UEI</h2>
+
+<ul>
+<li><a href="materials.html">📚 Study Materials</a></li>
+<li><a href="assignment.html">📤 Assignments</a></li>
+<li><a href="announcements.html">📢 Announcements</a></li>
+<li><a href="feedback.html">📝 Feedback</a></li>
+</ul>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+</div>
+
+
+<!-- Main Content -->
+
+<div class="main-content">
+
+<!-- Top Navbar -->
+
+<div class="top-navbar">
+
+<div class="nav-title">
+Unified Educational Interface
+</div>
+
+<div class="nav-right">
+
+<div class="notification">
+🔔
+<span class="badge">3</span>
+</div>
+
+<div class="user-profile" id="studentName">
+👤 Student
+</div>
+
+</div>
+
+</div>
+
+
+<!-- Page Header -->
+
+<div class="header">
+<h1>Student Dashboard</h1>
+<p id="welcomeUser">Welcome Student 👋</p>
+</div>
+
+
+<!-- Dashboard Cards -->
+
+<div class="cards">
+
+<a href="materials.html" class="card-link">
+<div class="card">
+<h3>Study Materials</h3>
+<p>Access learning resources and notes.</p>
+</div>
+</a>
+
+<a href="assignment.html" class="card-link">
+<div class="card">
+<h3>Assignments</h3>
+<p>Submit and manage assignments.</p>
+</div>
+</a>
+
+<a href="announcements.html" class="card-link">
+<div class="card">
+<h3>Announcements</h3>
+<p>Check latest updates from teachers.</p>
+</div>
+</a>
+
+<a href="feedback.html" class="card-link">
+<div class="card">
+<h3>Feedback</h3>
+<p>Send feedback about courses.</p>
+</div>
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/script.js"></script>
+
+<script>
+const name = localStorage.getItem("studentName");
+
+if(name){
+document.getElementById("welcomeUser").innerText = "Welcome " + name + " 👋";
+}
+</script>
+
+</body>
+</html>

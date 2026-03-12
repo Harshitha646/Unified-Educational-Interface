@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Feedback</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>UEI</h2>
+
+<ul>
+<li><a href="materials.html">📚 Study Materials</a></li>
+<li><a href="assignment.html">📤 Assignments</a></li>
+<li><a href="announcements.html">📢 Announcements</a></li>
+<li><a href="feedback.html" class="active">📝 Feedback</a></li>
+</ul>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+</div>
+
+
+<!-- Main Content -->
+
+<div class="main-content">
+
+<!-- Top Navbar -->
+
+<div class="top-navbar">
+
+<div class="nav-title">
+Unified Educational Interface
+</div>
+
+<div class="nav-right">
+
+<div class="notification">
+🔔
+<span class="badge">3</span>
+</div>
+
+<div class="user-profile" id="studentName">
+👤 Student
+</div>
+
+</div>
+
+</div>
+
+
+<!-- Page Header -->
+
+<div class="header">
+<h1>Feedback</h1>
+<p>Share your thoughts about the course</p>
+</div>
+
+
+<!-- Feedback Form -->
+
+<div class="card feedback-card">
+
+<form onsubmit="submitFeedback(event)">
+
+<label>Your Feedback</label>
+
+<textarea 
+rows="5" 
+placeholder="Write your feedback here..." 
+required>
+</textarea>
+
+<button type="submit" class="submit-btn">
+Submit Feedback
+</button>
+
+</form>
+
+</div>
+
+
+<br>
+
+<a href="student.html" class="back-btn">
+Back to Dashboard
+</a>
+
+
+</div>
+
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
+```
