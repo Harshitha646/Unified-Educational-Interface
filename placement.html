@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEI | Career Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sidebar-width: 260px; 
+            --primary: #2dd4bf; 
+            --sidebar-bg: #1e293b; 
+            --bg-dark: #0f172a; 
+            --card-bg: #1e293b; 
+            --text-muted: #94a3b8; 
+            --border: #334155; 
+            --input-bg: #0f172a;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { display: flex; background: var(--bg-dark); color: white; height: 100vh; overflow: hidden; }
+        
+        /* SIDEBAR */
+        .sidebar { 
+            width: var(--sidebar-width); background: var(--sidebar-bg); height: 100vh; 
+            position: fixed; padding: 20px; border-right: 1px solid var(--border); 
+            display: flex; flex-direction: column; 
+        }
+        .sidebar-brand { font-size: 1.8rem; font-weight: 800; padding: 10px 0 30px; }
+        .nav-links { list-style: none; flex-grow: 1; }
+        .nav-links li a { 
+            display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; 
+            text-decoration: none; border-radius: 8px; margin-bottom: 5px; font-size: 0.9rem; 
+        }
+        .nav-links li a.active { background: rgba(45, 212, 191, 0.15); color: var(--primary); font-weight: 600; }
+        .logout-btn { 
+            background: #ef4444; color: white; padding: 14px; border-radius: 12px; 
+            text-align: center; border: none; cursor: pointer; font-weight: 700; margin-top: auto; 
+        }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 40px 50px; overflow-y: auto; scroll-behavior: smooth; }
+
+        /* COMPANY GRID */
+        .company-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .company-card { 
+            background: var(--card-bg); padding: 30px 20px; border-radius: 20px; 
+            border: 1px solid var(--border); text-align: center; transition: 0.4s ease;
+        }
+        .company-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .company-icon { font-size: 2.8rem; margin-bottom: 15px; display: block; }
+        
+        .reg-btn { 
+            background: var(--primary); color: #0f172a; border: none; padding: 12px; 
+            border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 15px;
+        }
+
+        /* FORM SECTION */
+        #registration-section { 
+            display: none; max-width: 800px; margin: 20px auto 60px; 
+            background: var(--card-bg); padding: 45px; border-radius: 24px; 
+            border: 1px solid var(--border); 
+        }
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 700; text-transform: uppercase; }
+        input, textarea { 
+            width: 100%; padding: 16px; background: var(--input-bg); border: 2px solid var(--border); 
+            border-radius: 12px; color: white; outline: none; font-size: 1rem; 
+        }
+        input:focus { border-color: var(--primary); }
+        .confirm-btn { 
+            width: 100%; padding: 18px; background: var(--primary); color: #0f172a; 
+            border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 1.1rem; 
+        }
+
+        /* SUCCESS POPUP */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9); display: none; 
+            justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--card-bg); padding: 40px; border-radius: 24px; 
+            border: 1px solid var(--border); text-align: center; max-width: 400px; width: 90%;
+        }
+        .success-rocket { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .modal-btn { 
+            background: var(--primary); color: #0f172a; border: none; padding: 12px 30px; 
+            border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">UEI</div>
+        <ul class="nav-links">
+            <li><a href="index.html">🏠 Dashboard</a></li>
+            <li><a href="materials.html">📚 Course Materials</a></li>
+            <li><a href="assignments.html">📝 Assignments</a></li>
+            <li><a href="placement.html" class="active">💼 Career Portal</a></li> 
+            <li><a href="announcements.html">📢 Announcements</a></li>
+            <li><a href="results.html">📊 Exam Results</a></li>
+            <li><a href="faculty.html">🧑‍🏫 Faculty</a></li> 
+            <li><a href="feedback.html">💬 Feedback</a></li> 
+        </ul>
+        <button class="logout-btn">Logout</button>
+    </aside>
+
+    <main class="main-content">
+        <h1 style="font-size: 2.2rem; margin-bottom: 30px;">Career Opportunities</h1>
+
+        <div class="company-grid">
+            <div class="company-card">
+                <span class="company-icon">🔍</span>
+                <h3>Google</h3>
+                <button class="reg-btn" onclick="openForm('Google')">📄 Register</button>
+            </div>
+            <div class="company-card">
+                <span class="company-icon">📦</span>
+                <h3>Amazon</h3>
+                <button class="reg-btn" onclick="openForm('Amazon')">📄 Register</button>
+            </div>
+            <div class="company-card">
+                <span class="company-icon">💻</span>
+                <h3>Microsoft</h3>
+                <button class="reg-btn" onclick="openForm('Microsoft')">📄 Register</button>
+            </div>
+            <div class="company-card">
+                <span class="company-icon">🍎</span>
+                <h3>Apple</h3>
+                <button class="reg-btn" onclick="openForm('Apple')">📄 Register</button>
+            </div>
+            <div class="company-card">
+                <span class="company-icon">🎨</span>
+                <h3>Adobe</h3>
+                <button class="reg-btn" onclick="openForm('Adobe')">📄 Register</button>
+            </div>
+        </div>
+
+        <div id="registration-section">
+            <h2 id="form-title" style="color: var(--primary); margin-bottom: 25px;"></h2>
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="name-field" placeholder="Enter Name">
+            </div>
+            <div class="input-group">
+                <label>Registration Number</label>
+                <input type="text" id="reg-field" placeholder="Enter Reg No">
+            </div>
+            <div class="input-group">
+                <label>CGPA</label>
+                <input type="text" id="cgpa-field" placeholder="e.g. 9.1">
+            </div>
+            <div class="input-group">
+                <label>Key Skills</label>
+                <textarea id="skills-field" rows="3" placeholder="Java, Python, etc."></textarea>
+            </div>
+            <button class="confirm-btn" onclick="submitApplication()">Confirm Application</button>
+        </div>
+    </main>
+
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="success-rocket">🚀</span>
+            <h2 style="color: white;">Application Submitted!</h2>
+            <p id="modal-msg" style="color: var(--text-muted); margin-top: 10px;"></p>
+            <button class="modal-btn" onclick="closePopup()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        let currentCompany = "";
+
+        function openForm(company) {
+            currentCompany = company;
+            const section = document.getElementById('registration-section');
+            const title = document.getElementById('form-title');
+            section.style.display = 'block';
+            title.innerText = "Register for " + company;
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitApplication() {
+            const name = document.getElementById('name-field').value;
+            if (name.trim() !== "") {
+                document.getElementById('modal-msg').innerText = "Your profile has been sent to " + currentCompany + ". Good luck, " + name + "!";
+                document.getElementById('success-modal').style.display = 'flex';
+                document.getElementById('registration-section').style.display = 'none';
+            } else {
+                alert("Please fill in your name.");
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('success-modal').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
