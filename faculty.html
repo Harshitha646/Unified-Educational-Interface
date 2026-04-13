@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEI | Faculty Directory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sidebar-width: 260px; --primary: #2dd4bf; --sidebar-bg: #1e293b; 
+            --bg-dark: #0f172a; --card-bg: #1e293b; --text-main: #f1f5f9; 
+            --text-muted: #94a3b8; --border: #334155; --btn-purple: #6366f1;
+            --success-green: #10b981; --accent-red: #ef4444;
+        }
+
+        body.light-mode {
+            --bg-dark: #f8fafc; --sidebar-bg: #ffffff; --card-bg: #ffffff;
+            --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { display: flex; background: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; transition: 0.3s; }
+        
+        /* Sidebar Styling */
+        .sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); height: 100vh; position: fixed; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid var(--border); transition: 0.3s; }
+        .sidebar-brand { font-size: 1.8rem; font-weight: 800; color: var(--text-main); text-align: center; padding: 20px 0 40px; }
+        .nav-links { list-style: none; flex-grow: 1; }
+        .nav-links li a { display: flex; align-items: center; padding: 12px 15px; color: var(--text-muted); text-decoration: none; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; }
+        .nav-links li a.active { background: rgba(45, 212, 191, 0.15); color: var(--primary); border-left: 4px solid var(--primary); }
+
+        .logout-btn { background: var(--accent-red); color: white; padding: 12px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 700; margin-top: auto; transition: 0.3s; border: none; cursor: pointer; }
+
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); height: 100vh; overflow-y: auto; padding: 20px 50px; }
+        
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .location { color: #f43f5e; font-size: 0.75rem; font-weight: 600; }
+        .theme-toggle { background: var(--btn-purple); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+
+        .page-title { font-size: 2rem; font-weight: 700; margin: 20px 0; }
+
+        /* --- Inbox Section --- */
+        #inbox-section { display: none; background: var(--card-bg); border: 1px solid var(--primary); border-radius: 12px; padding: 20px; margin-bottom: 30px; animation: slideDown 0.5s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .inbox-title { color: var(--primary); font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .message-bubble { background: var(--bg-dark); padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary); }
+        .sender-name { font-weight: 700; color: var(--text-main); font-size: 0.85rem; }
+        .reply-content { color: var(--text-muted); font-size: 0.9rem; margin-top: 5px; font-style: italic; }
+
+        /* --- FIXED: Faculty Grid --- */
+        .faculty-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+            gap: 20px; 
+            padding-bottom: 40px; 
+        }
+        .faculty-card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 25px; text-align: center; transition: 0.3s; }
+        .faculty-avatar { width: 50px; height: 50px; background: #334155; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 2px solid var(--btn-purple); }
+        .dept { font-size: 0.7rem; font-weight: 700; color: var(--btn-purple); text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .contact-btn { width: 100%; background: var(--btn-purple); color: white; border: none; padding: 12px; border-radius: 6px; margin-top: 15px; cursor: pointer; font-weight: 600; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 420px; border: 1px solid var(--border); position: relative; }
+        textarea { width: 100%; height: 120px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); padding: 15px; margin-bottom: 10px; outline: none; resize: none; }
+        #status-msg { color: var(--success-green); font-weight: 700; font-size: 0.9rem; text-align: center; margin-bottom: 15px; display: none; }
+        .send-btn { width: 100%; background: var(--primary); color: #0f172a; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+    </style>
+</head>
+<body id="page-body">
+
+<aside class="sidebar">
+    <div class="sidebar-brand">UEI</div>
+    <ul class="nav-links">
+        <li><a href="index.html">🏠 Dashboard</a></li>
+        <li><a href="materials.html">📚 Course Materials</a></li>
+        <li><a href="assignments.html">📝 Assignments</a></li>
+        <li><a href="placement.html">💼 Career Portal</a></li> 
+        <li><a href="announcements.html">📢 Announcements</a></li>
+        <li><a href="results.html">📊 Exam Results</a></li>
+        <li><a href="faculty.html">🧑‍🏫 Faculty</a></li> <li><a href="feedback.html">📄 Feedback</a></li>
+    </ul>
+    <a href="login.html" class="logout-btn">Logout</a>
+</aside>
+<main class="main-content">
+    <div class="header-top">
+        <div class="location">📍 Main Campus: Knowledge Park III, Greater Noida</div>
+        <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙 Dark Mode</button>
+    </div>
+
+    <h1 class="page-title">Faculty Directory</h1>
+
+    <div id="inbox-section">
+        <div class="inbox-title">📩 New Message Received</div>
+        <div class="message-bubble">
+            <div class="sender-name" id="reply-sender">Teacher Name</div>
+            <div class="reply-content" id="reply-text">Replying...</div>
+        </div>
+    </div>
+
+    <div class="faculty-grid">
+        <div class="faculty-card">
+            <div class="faculty-avatar">📐</div>
+            <span class="dept">Mathematics</span>
+            <h3>Prof. Priya Sharma</h3>
+            <button class="contact-btn" onclick="openContact('Prof. Priya Sharma')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">⚛️</div>
+            <span class="dept">Physics</span>
+            <h3>Dr. Rajesh Iyer</h3>
+            <button class="contact-btn" onclick="openContact('Dr. Rajesh Iyer')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">👨‍💻</div>
+            <span class="dept">Computer Science</span>
+            <h3>Dr. Arul Kumar</h3>
+            <button class="contact-btn" onclick="openContact('Dr. Arul Kumar')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">🌳</div>
+            <span class="dept">Data Structures</span>
+            <h3>Prof. Amit Verma</h3>
+            <button class="contact-btn" onclick="openContact('Prof. Amit Verma')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">🗣️</div>
+            <span class="dept">Communication</span>
+            <h3>Ms. Sneha Kapoor</h3>
+            <button class="contact-btn" onclick="openContact('Ms. Sneha Kapoor')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">🌐</div>
+            <span class="dept">Web Development</span>
+            <h3>Mr. Karan Singh</h3>
+            <button class="contact-btn" onclick="openContact('Mr. Karan Singh')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">🗄️</div>
+            <span class="dept">Database Systems</span>
+            <h3>Dr. Megha Gupta</h3>
+            <button class="contact-btn" onclick="openContact('Dr. Megha Gupta')">Contact Teacher</button>
+        </div>
+        <div class="faculty-card">
+            <div class="faculty-avatar">🤖</div>
+            <span class="dept">AI & ML</span>
+            <h3>Dr. Vikram Aditya</h3>
+            <button class="contact-btn" onclick="openContact('Dr. Vikram Aditya')">Contact Teacher</button>
+        </div>
+    </div>
+</main>
+
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <h3 id="modalName">Message Teacher</h3>
+            <span onclick="closeContact()" style="cursor: pointer;">&times;</span>
+        </div>
+        <textarea id="message-area" placeholder="Write your query here..."></textarea>
+        <div id="status-msg">✔ Message sent successfully!</div>
+        <button class="send-btn" id="submit-msg" onclick="sendMessage()">Send Message</button>
+    </div>
+</div>
+
+<script>
+    let currentTeacher = "";
+
+    function toggleTheme() {
+        const body = document.getElementById('page-body');
+        const btn = document.getElementById('theme-btn');
+        body.classList.toggle('light-mode');
+        btn.innerHTML = body.classList.contains('light-mode') ? "☀️ Light Mode" : "🌙 Dark Mode";
+    }
+
+    const modal = document.getElementById('contactModal');
+    const statusMsg = document.getElementById('status-msg');
+    const submitBtn = document.getElementById('submit-msg');
+
+    function openContact(name) {
+        currentTeacher = name;
+        statusMsg.style.display = 'none'; 
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Send Message";
+        document.getElementById('message-area').value = "";
+        document.getElementById('modalName').innerText = "Message " + name;
+        modal.style.display = 'flex';
+    }
+
+    function closeContact() { modal.style.display = 'none'; }
+
+    // Simulated Teacher Reply Logic
+    function sendMessage() {
+        const msgText = document.getElementById('message-area').value;
+        if(!msgText) { alert("Please enter a message."); return; }
+
+        statusMsg.style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Sending...";
+
+        setTimeout(() => {
+            closeContact();
+            
+            // Teacher reply appears after 4 seconds
+            setTimeout(() => {
+                const inbox = document.getElementById('inbox-section');
+                const senderDisplay = document.getElementById('reply-sender');
+                const textDisplay = document.getElementById('reply-text');
+
+                senderDisplay.innerText = "Re: " + currentTeacher;
+                textDisplay.innerText = "Hello! I have received your message. Let's discuss this during my office hours.";
+                
+                inbox.style.display = 'block';
+                inbox.scrollIntoView({ behavior: 'smooth' });
+            }, 4000);
+
+        }, 1200);
+    }
+
+    window.onclick = function(event) { if (event.target == modal) closeContact(); }
+</script>
+</body>
+</html>

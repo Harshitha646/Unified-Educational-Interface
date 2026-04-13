@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEI | Exam Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sidebar-width: 260px; 
+            --primary: #2dd4bf; 
+            --sidebar-bg: #1e293b; 
+            --bg-dark: #0f172a; 
+            --card-bg: #1e293b; 
+            --text-muted: #94a3b8; 
+            --border: #334155; 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { display: flex; background: var(--bg-dark); color: white; height: 100vh; overflow: hidden; }
+        
+        /* SIDEBAR PANEL */
+        .sidebar { 
+            width: var(--sidebar-width); background: var(--sidebar-bg); height: 100vh; 
+            position: fixed; padding: 20px; border-right: 1px solid var(--border); 
+            display: flex; flex-direction: column; 
+        }
+        .sidebar-brand { font-size: 1.8rem; font-weight: 800; text-align: center; padding: 20px 0 40px; letter-spacing: 2px; }
+        .nav-links { list-style: none; flex-grow: 1; }
+        .nav-links li a { 
+            display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; 
+            text-decoration: none; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; 
+        }
+        .nav-links li a.active { background: rgba(45, 212, 191, 0.15); color: var(--primary); border-left: 4px solid var(--primary); }
+        .logout-btn { background: #ef4444; color: white; padding: 12px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 700; margin-top: auto; border: none; cursor: pointer; }
+
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 40px 50px; overflow-y: auto; }
+
+        /* VERIFICATION UI */
+        #verification-ui { max-width: 450px; margin: 40px auto; background: var(--card-bg); padding: 35px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+        .input-group input { 
+            width: 100%; padding: 12px; background: #0f172a; 
+            border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; 
+        }
+        .captcha-box { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; }
+        #captcha-display { 
+            flex-grow: 1; background: var(--primary); color: #0f172a; 
+            font-weight: 900; font-size: 1.3rem; padding: 10px; 
+            border-radius: 8px; letter-spacing: 4px; font-family: monospace;
+        }
+
+        /* RESULTS UI */
+        #results-ui { display: none; }
+        .results-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .results-card { background: var(--card-bg); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 20px; background: rgba(255,255,255,0.02); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 20px; border-bottom: 1px solid var(--border); }
+        .grade-badge { background: rgba(45, 212, 191, 0.15); color: var(--primary); padding: 5px 12px; border-radius: 6px; font-weight: 800; }
+        .btn-teal { background: var(--primary); color: #0f172a; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        /* --- PROFESSIONAL MODAL CSS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: none;
+            justify-content: center; align-items: center; z-index: 9999;
+        }
+        .modal-box {
+            background: #1e293b; padding: 40px; border-radius: 24px;
+            border: 1px solid #334155; text-align: center;
+            max-width: 400px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: modalFade 0.3s ease;
+        }
+        @keyframes modalFade { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-btn {
+            background: var(--primary); color: #0f172a; border: none;
+            padding: 12px 30px; border-radius: 10px; font-weight: 800;
+            cursor: pointer; width: 100%; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">UEI</div>
+        <ul class="nav-links">
+            <li><a href="index.html">🏠 Dashboard</a></li>
+            <li><a href="materials.html">📚 Course Materials</a></li>
+            <li><a href="assignments.html">📝 Assignments</a></li>
+            <li><a href="placement.html">💼 Career Portal</a></li> 
+            <li><a href="announcements.html">📢 Announcements</a></li>
+            <li><a href="results.html" class="active">📊 Exam Results</a></li>
+            <li><a href="faculty.html">🧑‍🏫 Faculty</a></li> 
+            <li><a href="feedback.html">📄 Feedback</a></li>
+        </ul>
+        <button onclick="handleLogout()" class="logout-btn">Logout</button>
+    </aside>
+
+    <main class="main-content">
+        <div id="verification-ui">
+            <h2>Result Verification</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Case-sensitive security enabled</p>
+            
+            <div class="input-group" style="margin-top: 30px;">
+                <label>Student Name</label>
+                <input type="text" id="v-name" placeholder="Enter name (e.g., harshi)">
+            </div>
+            
+            <div class="input-group">
+                <label>Registration Number</label>
+                <input type="text" id="v-reg" placeholder="Enter registration no.">
+            </div>
+
+            <div class="captcha-box">
+                <div id="captcha-display">Loading...</div>
+                <button onclick="newCaptcha()" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size: 1.2rem;">🔄</button>
+            </div>
+            <div class="input-group">
+                <input type="text" id="v-cap" placeholder="Enter characters exactly">
+            </div>
+
+            <button class="btn-teal" style="width: 100%;" onclick="processVerify()">Unlock Results</button>
+        </div>
+
+        <div id="results-ui">
+            <div class="results-header">
+                <div>
+                    <h1>Academic Results</h1>
+                    <p style="color: var(--text-muted);">Verified Student: <b id="user-label" style="color:white"></b> | Reg: 654990</p>
+                </div>
+                <button class="btn-teal" onclick="handleDownload()">📥 Download Marksheet</button>
+            </div>
+
+            <div class="results-card">
+                <table>
+                    <thead>
+                        <tr><th>Subject Name</th><th>Credits</th><th>Grade</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modalIcon" style="font-size:3rem; margin-bottom:15px;">📊</div>
+            <h2 id="modalTitle" style="color:white; margin-bottom:10px;">Security Alert</h2>
+            <p id="modalMessage" style="color:#94a3b8; line-height:1.5;"></p>
+            <button class="modal-btn" onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        let secretCode = "";
+
+        // --- MODAL CONTROLLER ---
+        function showProfessionalModal(title, message, icon) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalIcon').innerText = icon;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        // Mixed-case Captcha
+        function newCaptcha() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            secretCode = "";
+            for (let i = 0; i < 6; i++) {
+                secretCode += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('captcha-display').innerText = secretCode;
+        }
+
+        // Verification Logic
+        function processVerify() {
+            const name = document.getElementById('v-name').value;
+            const reg = document.getElementById('v-reg').value;
+            const cap = document.getElementById('v-cap').value; 
+
+            if (name === "harshi" && reg === "654990" && cap === secretCode) {
+                document.getElementById('verification-ui').style.display = 'none';
+                document.getElementById('results-ui').style.display = 'block';
+                document.getElementById('user-label').innerText = name;
+                loadResults();
+            } else {
+                showProfessionalModal("Verification Failed", "Please check your credentials or Captcha case sensitivity.", "❌");
+                newCaptcha();
+            }
+        }
+
+        // Download Pop-up
+        function handleDownload() {
+            showProfessionalModal("PDF Generated", "Your official marksheet is being downloaded to your device.", "📥");
+        }
+
+        // Load Table Data
+        function loadResults() {
+            const resultsData = [
+                { s: "Common Foundation", c: 4, g: "A", st: "SUCCESSFUL" },
+                { s: "Data Structures", c: 4, g: "B+", st: "SUCCESSFUL" },
+                { s: "Discrete Mathematics", c: 3, g: "A", st: "SUCCESSFUL" }
+            ];
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = resultsData.map(item => `
+                <tr>
+                    <td><b>${item.s}</b></td>
+                    <td style="color:var(--text-muted)">${item.c}</td>
+                    <td><span class="grade-badge">${item.g}</span></td>
+                    <td style="color:#2ecc71; font-weight:700;">${item.st}</td>
+                </tr>
+            `).join('');
+        }
+
+        function handleLogout() {
+            if(confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem("studentName");
+                window.location.href = "login.html";
+            }
+        }
+
+        window.onload = newCaptcha;
+    </script>
+</body>
+</html>

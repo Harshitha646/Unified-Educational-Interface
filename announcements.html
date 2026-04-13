@@ -1,106 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEI | Central Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sidebar-width: 260px; --primary: #2dd4bf; --sidebar-bg: #1e293b; 
+            --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.6); --text-main: #f1f5f9; 
+            --text-muted: #94a3b8; --border: rgba(255, 255, 255, 0.1);
+            --glow-cyan: #2dd4bf; --glow-purple: #8b5cf6; --glow-blue: #3b82f6;
+            --glow-orange: #f59e0b; --glow-red: #ef4444; --glow-pink: #ec4899;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { display: flex; background: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        /* Modern Sidebar */
+        .sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); height: 100vh; position: fixed; padding: 20px; border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-brand { font-size: 1.8rem; font-weight: 800; color: white; text-align: center; padding: 20px 0 40px; }
+        .nav-links { list-style: none; flex-grow: 1; }
+        .nav-links li a { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 14px; margin-bottom: 8px; font-size: 0.9rem; transition: 0.3s; border: 1px solid transparent; }
+        .nav-links li a.active { background: rgba(45, 212, 191, 0.1); color: var(--primary); border: 1px solid rgba(45, 212, 191, 0.2); }
+        .logout-btn { background: #ef4444; color: white; padding: 12px; border-radius: 14px; text-align: center; text-decoration: none; font-weight: 700; margin-top: auto; }
 
-<title>Announcements</title>
+        /* Main Canvas */
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 60px; height: 100vh; overflow-y: auto; background: radial-gradient(circle at 80% 10%, rgba(45, 212, 191, 0.08), transparent 40%); }
+        .page-header { margin-bottom: 50px; }
+        .page-header h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; }
 
-<link rel="stylesheet" href="css/style.css">
+        /* Notification Grid */
+        .notify-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; padding-bottom: 60px; }
 
+        .notify-card { 
+            background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 28px; border: 1px solid var(--border); padding: 32px; 
+            text-decoration: none; color: inherit; transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1); 
+            display: flex; flex-direction: column; position: relative;
+        }
+        .notify-card:hover { transform: translateY(-12px); border-color: rgba(255,255,255,0.3); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.6); }
+
+        /* Category Glow Icons */
+        .icon-wrap { width: 56px; height: 56px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 24px; }
+        .placements .icon-wrap { background: rgba(59, 130, 246, 0.15); color: var(--glow-blue); border: 1px solid var(--glow-blue); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        .results .icon-wrap { background: rgba(139, 92, 246, 0.15); color: var(--glow-purple); border: 1px solid var(--glow-purple); }
+        .academic .icon-wrap { background: rgba(45, 212, 191, 0.15); color: var(--glow-cyan); border: 1px solid var(--glow-cyan); }
+        .clubs .icon-wrap { background: rgba(236, 72, 153, 0.15); color: var(--glow-pink); border: 1px solid var(--glow-pink); }
+        .events .icon-wrap { background: rgba(245, 158, 11, 0.15); color: var(--glow-orange); border: 1px solid var(--glow-orange); }
+        .admin .icon-wrap { background: rgba(239, 68, 68, 0.15); color: var(--glow-red); border: 1px solid var(--glow-red); }
+
+        .notify-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; color: #fff; }
+        .notify-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+
+        /* Card Footer Styling */
+        .card-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border); }
+        .tag { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .status-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--glow-cyan); animation: pulse 1.5s infinite; }
+        
+        .action-link { background: rgba(255, 255, 255, 0.05); padding: 10px 18px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; color: var(--primary); transition: 0.3s; }
+        .notify-card:hover .action-link { background: var(--primary); color: var(--bg-dark); }
+
+        @keyframes pulse { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
+    </style>
 </head>
-
 <body>
+    <aside class="sidebar">
+    <div class="sidebar-brand">UEI</div>
+    <ul class="nav-links">
+        <li><a href="index.html">🏠 Dashboard</a></li>
+        <li><a href="materials.html">📚 Course Materials</a></li>
+        <li><a href="assignments.html">📝 Assignments</a></li>
+        <li><a href="placement.html">💼 Career Portal</a></li> 
+        <li><a href="announcements.html">📢 Announcements</a></li>
+        <li><a href="results.html">📊 Exam Results</a></li>
+        <li><a href="faculty.html">🧑‍🏫 Faculty</a></li> <li><a href="feedback.html">📄 Feedback</a></li>
+    </ul>
+    <a href="login.html" class="logout-btn">Logout</a>
+</aside>
 
-<div class="dashboard">
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Campus Pulse</h1>
+            <p style="color: var(--text-muted);">Stay ahead with real-time career, academic, and social updates.</p>
+        </header>
+        
+        <div class="notify-grid">
+            <a href="placements.html" class="notify-card placements">
+                <div class="icon-wrap">💼</div>
+                <h3>Career Opportunities</h3>
+                <p>Google & Amazon have opened applications for the 2026 Associate Developer role. Review criteria and apply via placement cell.</p>
+                <div class="card-meta">
+                    <span class="tag">Placement Cell</span>
+                    <span class="action-link">Apply Now</span>
+                </div>
+            </a>
 
-<!-- Sidebar -->
+            <a href="results.html" class="notify-card results">
+                <div class="icon-wrap">📊</div>
+                <h3>Semester Performance</h3>
+                <p>Winter 2025 results are officially released. Your digital grade sheet is now ready for verification.</p>
+                <div class="card-meta">
+                    <span class="tag"><div class="status-pulse"></div> Result Live</span>
+                    <span class="action-link">View Marks</span>
+                </div>
+            </a>
 
-<div class="sidebar">
+            <a href="materials.html" class="notify-card academic">
+                <div class="icon-wrap">📖</div>
+                <h3>Lab Resources</h3>
+                <p>New UiPath Orchestrator and Physics (Optics) modules have been added to your library.</p>
+                <div class="card-meta">
+                    <span class="tag">4 New Files</span>
+                    <span class="action-link">Download</span>
+                </div>
+            </a>
 
-<h2>UEI</h2>
+            <a href="clubs.html" class="notify-card clubs">
+                <div class="icon-wrap">📸</div>
+                <h3>Photography Club</h3>
+                <p>Winner announcement for the Saree-themed photoshoot competition. Join the exhibition in Block A this Friday.</p>
+                <div class="card-meta">
+                    <span class="tag">Student Life</span>
+                    <span class="action-link">See Winners</span>
+                </div>
+            </a>
 
-<ul>
-<li><a href="materials.html">📚 Study Materials</a></li>
-<li><a href="assignment.html">📤 Assignments</a></li>
-<li><a href="announcements.html" class="active">📢 Announcements</a></li>
-<li><a href="feedback.html">📝 Feedback</a></li>
-</ul>
+            <a href="symposium.html" class="notify-card events">
+                <div class="icon-wrap">🚀</div>
+                <h3>Tech Symposium 2026</h3>
+                <p>Registration Successful. Your team status for the Annual Hackathon is active. Check the event schedule.</p>
+                <div class="card-meta">
+                    <span class="tag">Coming Soon</span>
+                    <span class="action-link">Manage Team</span>
+                </div>
+            </a>
 
-<button class="logout-btn" onclick="logout()">Logout</button>
-
-</div>
-
-
-<!-- Main Content -->
-
-<div class="main-content">
-
-<!-- Top Navbar -->
-
-<div class="top-navbar">
-
-<div class="nav-title">
-Unified Educational Interface
-</div>
-
-<div class="nav-right">
-
-<div class="notification">
-🔔
-<span class="badge">3</span>
-</div>
-
-<div class="user-profile" id="studentName">
-👤 Student
-</div>
-
-</div>
-
-</div>
-
-
-<!-- Page Header -->
-
-<div class="header">
-<h1>Announcements</h1>
-<p>Latest updates from teachers</p>
-</div>
-
-
-<!-- Announcements -->
-
-<a href="assignment.html" class="announcement-link">
-<div class="announcement-card">
-<h3>📢 Assignment Deadline</h3>
-<p>Submit your Data Structures assignment before Friday.</p>
-</div>
-</a>
-
-
-<a href="materials.html" class="announcement-link">
-<div class="announcement-card">
-<h3>📢 New Study Materials</h3>
-<p>Computer Science lecture notes have been uploaded.</p>
-</div>
-</a>
-
-
-<div class="announcement-card">
-<h3>📢 Holiday Notice</h3>
-<p>College will remain closed on Monday for a public holiday.</p>
-</div>
-
-
-</div>
-
-</div>
-
-<script src="js/script.js"></script>
-
+            <a href="feedback.html" class="notify-card admin">
+                <div class="icon-wrap">⚠️</div>
+                <h3>Admin & Fees</h3>
+                <p>Last date for Spring 2026 tuition fee submission is April 15th. Avoid late fines by paying through the student portal.</p>
+                <div class="card-meta">
+                    <span class="tag">Finance</span>
+                    <span class="action-link">Pay Online</span>
+                </div>
+            </a>
+        </div>
+    </main>
 </body>
 </html>
-```
-

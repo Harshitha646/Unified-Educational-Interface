@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>UEI Admin</h2>
+
+<ul>
+<li><a href="admin.html" class="active">📊 View Feedback</a></li>
+<li><a href="login.html">🔑 Login Page</a></li>
+</ul>
+
+</div>
+
+
+<!-- Main Content -->
+
+<div class="main-content">
+
+<!-- Page Header -->
+
+<div class="header">
+<h1>Student Feedback</h1>
+<p>All feedback submitted by students</p>
+</div>
+
+
+<!-- Feedback List -->
+
+<div class="card">
+
+<ul id="feedbackList"></ul>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+fetch("http://localhost:5000/feedback")
+.then(res => res.json())
+.then(data => {
+
+const list = document.getElementById("feedbackList");
+
+if(data.length === 0){
+
+list.innerHTML = "<p>No feedback submitted yet.</p>";
+
+}else{
+
+data.forEach(item => {
+
+const li = document.createElement("li");
+
+li.innerHTML = `<b>${item.name}</b> : ${item.feedback}`;
+
+list.appendChild(li);
+
+});
+
+}
+
+});
+
+</script>
+
+</body>
+
+</html>

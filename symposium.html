@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEI | Tech Symposium Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --sidebar-width: 260px; --primary: #2dd4bf; --sidebar-bg: #1e293b; 
+            --bg-dark: #0f172a; --card-bg: #1e293b; --text-main: #f1f5f9; 
+            --text-muted: #94a3b8; --border: #334155; --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { display: flex; background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); height: 100vh; position: fixed; padding: 20px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .sidebar-brand { font-size: 1.8rem; font-weight: 800; color: white; text-align: center; padding: 20px 0 40px; }
+        .nav-links { list-style: none; flex-grow: 1; }
+        .nav-links li a { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; }
+        .nav-links li a.active { background: rgba(45, 212, 191, 0.15); color: var(--primary); border-left: 4px solid var(--primary); }
+        .logout-btn { background: var(--accent-red); color: white; padding: 12px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 700; margin-top: auto; }
+
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 40px 60px; height: 100vh; overflow-y: auto; }
+        .reg-card { background: var(--card-bg); border-radius: 15px; border: 1px solid var(--border); padding: 40px; max-width: 800px; margin: 0 auto; }
+        
+        .event-badge { background: rgba(245, 158, 11, 0.1); color: var(--accent-orange); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: inline-block; }
+        .reg-card h1 { margin-bottom: 10px; }
+        .reg-description { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full { grid-column: span 2; }
+        
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+        input, select, textarea { background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: white; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); }
+        
+        .submit-btn { background: var(--primary); color: #0f172a; border: none; padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 20px; width: 100%; }
+
+        #success-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; align-items: center; justify-content: center; z-index: 1000; flex-direction: column; text-align: center; }
+        .overlay-link { color: var(--primary); text-decoration: none; font-weight: 700; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+    <div class="sidebar-brand">UEI</div>
+    <ul class="nav-links">
+        <li><a href="index.html">🏠 Dashboard</a></li>
+        <li><a href="materials.html">📚 Course Materials</a></li>
+        <li><a href="assignments.html">📝 Assignments</a></li>
+        <li><a href="placement.html">💼 Career Portal</a></li> 
+        <li><a href="announcements.html">📢 Announcements</a></li>
+        <li><a href="results.html">📊 Exam Results</a></li>
+        <li><a href="faculty.html">🧑‍🏫 Faculty</a></li> <li><a href="feedback.html">📄 Feedback</a></li>
+    </ul>
+    <a href="login.html" class="logout-btn">Logout</a>
+</aside>
+
+    <main class="main-content">
+        <div class="reg-card">
+            <span class="event-badge">College Event</span>
+            <h1>Annual Tech Symposium 2026</h1>
+            <p class="reg-description">Join us for a 3-day hackathon and networking event. Registrations close this Friday.</p>
+
+            <form id="reg-form" onsubmit="handleRegistration(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" placeholder="harsh" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-id">Student ID</label>
+                        <input type="text" id="student-id" placeholder="UEI-2026-001" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="harsh@uei.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="track">Track Preference</label>
+                        <select id="track" required title="Select Track">
+                            <option value="">Select a track</option>
+                            <option>Web Development</option>
+                            <option>AI & Machine Learning</option>
+                            <option>Data Structures</option>
+                        </select>
+                    </div>
+                    <div class="form-group full">
+                        <label for="team">Team Members (Optional)</label>
+                        <textarea id="team" rows="3" placeholder="List names of team members..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Complete Registration</button>
+            </form>
+        </div>
+    </main>
+
+    <div id="success-overlay">
+        <div style="font-size: 4rem; margin-bottom: 20px;">✅</div>
+        <h1>Registration Successful!</h1>
+        <p style="color: var(--text-muted);">You are now registered for the Symposium.</p>
+        <a href="announcements.html" class="overlay-link">← Back to Announcements</a>
+    </div>
+
+    <script>
+        function handleRegistration(event) {
+            event.preventDefault();
+            document.getElementById('success-overlay').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
