@@ -34,9 +34,9 @@ return false
 
 }
 
-}
 
-}
+
+
 function logout(){
 localStorage.removeItem("studentName");
 window.location.href = "login.html";
