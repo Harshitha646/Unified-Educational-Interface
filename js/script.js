@@ -1,104 +1,276 @@
-// --- LOGIN FUNCTION ---
-function loginCheck(event) {
-    if (event) event.preventDefault(); 
-    const loginUser = document.getElementById('loginUser');
-    const usernameInput = loginUser ? loginUser.value : "";
+// ======================================================
+// UNIFIED EDUCATIONAL INTERFACE - MAIN JAVASCRIPT
+// ======================================================
 
-    if (usernameInput.trim() !== "") {
-        localStorage.setItem("studentName", usernameInput);
-        window.location.href = "index.html"; 
-    } else if (loginUser) {
-        loginUser.placeholder = "Username Required!";
-        loginUser.style.borderColor = "red";
+
+// ---------------- LOGIN FUNCTION ----------------
+function loginCheck(event) {
+    if (event) {
+        event.preventDefault();
     }
+
+    const usernameElement = document.getElementById("loginUser");
+    const passwordElement = document.getElementById("loginPassword");
+
+    const username = usernameElement
+        ? usernameElement.value.trim()
+        : "";
+
+    const password = passwordElement
+        ? passwordElement.value
+        : "";
+
+    // Check empty fields
+    if (username === "" || password === "") {
+        alert("Please enter username and password.");
+        return false;
+    }
+
+    // Connect to deployed Render backend
+    fetch("https://unified-educational-interface.onrender.com/api/login", {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+
+    .then(response => {
+        return response.json().then(data => ({
+            status: response.status,
+            data: data
+        }));
+    })
+
+    .then(result => {
+
+        if (
+            result.status === 200 &&
+            result.data.message === "Login Successful"
+        ) {
+
+            // Save username
+            localStorage.setItem("studentName", username);
+
+            // Open student dashboard
+            window.location.href = "student.html";
+
+        } else {
+
+            alert(
+                result.data.message ||
+                "Invalid username or password."
+            );
+        }
+    })
+
+    .catch(error => {
+
+        console.error("Login Error: - script.js:74", error);
+
+        alert(
+            "Cannot connect to backend. Please try again."
+        );
+    });
+
+    return false;
 }
 
-// --- LOGOUT FUNCTION ---
+
+// ---------------- LOGOUT FUNCTION ----------------
 function logout() {
-    if(confirm("Are you sure you want to logout?")) {
+
+    if (confirm("Are you sure you want to logout?")) {
+
         localStorage.removeItem("studentName");
+
         window.location.href = "login.html";
     }
 }
 
-// --- INITIALIZE ALL PAGES ---
-document.addEventListener("DOMContentLoaded", () => {
-    
-    // 1. PERSISTENT USER NAME DISPLAY
+
+// ======================================================
+// PAGE INITIALIZATION
+// ======================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ---------------- DISPLAY STUDENT NAME ----------------
+
     const user = localStorage.getItem("studentName");
-    // Looks for both common ID names used in your different pages
-    const display = document.getElementById("studentNameDisplay") || document.getElementById("studentName");
-    
+
+    const display =
+        document.getElementById("studentNameDisplay") ||
+        document.getElementById("studentName");
+
     if (user && display) {
+
         display.innerText = "👤 " + user;
     }
 
-    // 2. FACULTY SEARCH LOGIC (Teachers Portal)
-    const searchInput = document.getElementById('searchInput');
-    const facultyGrid = document.getElementById('facultyGrid');
-    
+
+    // ---------------- WELCOME USER ----------------
+
+    const welcome = document.getElementById("welcomeUser");
+
+    if (user && welcome) {
+
+        welcome.innerText = "Welcome " + user + " 👋";
+    }
+
+
+    // ==================================================
+    // FACULTY SEARCH
+    // ==================================================
+
+    const searchInput = document.getElementById("searchInput");
+    const facultyGrid = document.getElementById("facultyGrid");
+
     if (searchInput && facultyGrid) {
-        searchInput.addEventListener('keyup', () => {
-            const filter = searchInput.value.toLowerCase();
-            const teacherCards = document.querySelectorAll('.teacher-card');
+
+        searchInput.addEventListener("keyup", function () {
+
+            const filter =
+                searchInput.value.toLowerCase();
+
+            const teacherCards =
+                document.querySelectorAll(".teacher-card");
+
             let hasResults = false;
 
-            teacherCards.forEach(card => {
-                const teacherName = card.querySelector('h3').innerText.toLowerCase();
-                const specialty = card.querySelector('.specialty').innerText.toLowerCase();
-                
-                if (teacherName.includes(filter) || specialty.includes(filter)) {
-                    card.style.display = ""; 
+            teacherCards.forEach(function (card) {
+
+                const nameElement =
+                    card.querySelector("h3");
+
+                const specialtyElement =
+                    card.querySelector(".specialty");
+
+                const teacherName =
+                    nameElement
+                        ? nameElement.innerText.toLowerCase()
+                        : "";
+
+                const specialty =
+                    specialtyElement
+                        ? specialtyElement.innerText.toLowerCase()
+                        : "";
+
+                if (
+                    teacherName.includes(filter) ||
+                    specialty.includes(filter)
+                ) {
+
+                    card.style.display = "";
                     hasResults = true;
+
                 } else {
-                    card.style.display = "none"; 
+
+                    card.style.display = "none";
                 }
             });
 
-            // Toggle the "No Results" message
-            let noResultsMsg = document.getElementById('noResults');
+
+            // No results message
+
+            let noResults =
+                document.getElementById("noResults");
+
             if (!hasResults && filter !== "") {
-                if (!noResultsMsg) {
-                    const msg = document.createElement('div');
-                    msg.id = 'noResults';
-                    msg.style.gridColumn = "1 / -1";
-                    msg.style.textAlign = "center";
-                    msg.style.padding = "20px";
-                    msg.innerHTML = `<h3>🔍 No faculty found for "${filter}"</h3>`;
-                    facultyGrid.appendChild(msg);
+
+                if (!noResults) {
+
+                    noResults =
+                        document.createElement("div");
+
+                    noResults.id = "noResults";
+
+                    noResults.style.gridColumn = "1 / -1";
+                    noResults.style.textAlign = "center";
+                    noResults.style.padding = "20px";
+
+                    noResults.innerHTML =
+                        `<h3>🔍 No faculty found for "${filter}"</h3>`;
+
+                    facultyGrid.appendChild(noResults);
                 }
-            } else if (noResultsMsg) {
-                noResultsMsg.remove();
+
+            } else {
+
+                if (noResults) {
+                    noResults.remove();
+                }
             }
         });
     }
 
-    // 3. ASSIGNMENT PORTAL SUBMISSION
-    const assignmentForm = document.getElementById("assignmentForm");
+
+    // ==================================================
+    // ASSIGNMENT SUBMISSION
+    // ==================================================
+
+    const assignmentForm =
+        document.getElementById("assignmentForm");
+
     if (assignmentForm) {
-        assignmentForm.addEventListener("submit", (e) => {
-            e.preventDefault(); 
-            const subject = document.getElementById("subjectSelect").value;
-            const status = document.getElementById("uploadStatus");
-            
+
+        assignmentForm.addEventListener("submit", function (e) {
+
+            e.preventDefault();
+
+            const subjectElement =
+                document.getElementById("subjectSelect");
+
+            const status =
+                document.getElementById("uploadStatus");
+
+            const subject =
+                subjectElement
+                    ? subjectElement.value
+                    : "Assignment";
+
             if (status) {
-                status.innerText = "✅ " + subject + " Assignment Submitted!";
+
+                status.innerText =
+                    "✅ " + subject + " Assignment Submitted!";
+
                 status.style.color = "#27ae60";
                 status.style.fontWeight = "bold";
                 status.style.display = "block";
             }
-            assignmentForm.reset(); 
+
+            assignmentForm.reset();
         });
     }
 
-    // 4. FEEDBACK PORTAL SUBMISSION
-    const feedbackForm = document.getElementById("feedbackForm");
+
+    // ==================================================
+    // FEEDBACK SUBMISSION
+    // ==================================================
+
+    const feedbackForm =
+        document.getElementById("feedbackForm");
+
     if (feedbackForm) {
-        feedbackForm.addEventListener("submit", (e) => {
+
+        feedbackForm.addEventListener("submit", function (e) {
+
             e.preventDefault();
-            const status = document.getElementById("feedbackStatus") || document.getElementById("feedbackMessage");
+
+            const status =
+                document.getElementById("feedbackStatus") ||
+                document.getElementById("feedbackMessage");
+
             if (status) {
-                status.innerText = "✅ Feedback Submitted Successfully!";
+
+                status.innerText =
+                    "✅ Feedback Submitted Successfully!";
+
                 status.style.color = "#27ae60";
                 status.style.backgroundColor = "#e8f5e9";
                 status.style.padding = "10px";
@@ -107,175 +279,345 @@ document.addEventListener("DOMContentLoaded", () => {
                 status.style.marginTop = "15px";
                 status.style.display = "block";
             }
+
             feedbackForm.reset();
         });
     }
+
+
+    // ==================================================
+    // CAREER / PLACEMENT
+    // ==================================================
+
+    const placementForm =
+        document.getElementById("placementForm");
+
+    const confirmButton =
+        document.querySelector(".confirm-btn");
+
+    const placementElement =
+        placementForm || confirmButton;
+
+    if (
+        placementElement &&
+        !placementElement.dataset.listenerAdded
+    ) {
+
+        placementElement.dataset.listenerAdded = "true";
+
+        placementElement.addEventListener("click", function (e) {
+
+            e.preventDefault();
+
+            showProfessionalModal(
+                "Application Sent!",
+                "Your technical profile has been submitted successfully.",
+                "🚀"
+            );
+        });
+    }
+
+
+    // ==================================================
+    // DARK MODE
+    // ==================================================
+
+    if (
+        localStorage.getItem("uei-theme") === "dark"
+    ) {
+
+        document.body.classList.add("dark-mode");
+
+        const themeButton =
+            document.getElementById("tBtn");
+
+        if (themeButton) {
+
+            themeButton.innerText =
+                "☀️ Light Mode";
+        }
+    }
 });
 
-// --- STUDY MATERIALS FILTERING ---
-function filterMaterials(category) {
-    const cards = document.querySelectorAll('.material-card');
-    const buttons = document.querySelectorAll('.filter-btn');
 
-    // Update button visual state
-    buttons.forEach(btn => {
-        btn.classList.remove('active');
-        // Check text content or data-filter attribute
-        const btnText = btn.innerText.toLowerCase();
-        if (category === 'all' && btnText.includes('all')) {
-            btn.classList.add('active');
-        } else if (btnText.includes(category)) {
-            btn.classList.add('active');
+// ======================================================
+// STUDY MATERIAL FILTER
+// ======================================================
+
+function filterMaterials(category) {
+
+    const cards =
+        document.querySelectorAll(".material-card");
+
+    const buttons =
+        document.querySelectorAll(".filter-btn");
+
+
+    // Update active button
+
+    buttons.forEach(function (button) {
+
+        button.classList.remove("active");
+
+        const text =
+            button.innerText.toLowerCase();
+
+        if (
+            category === "all" &&
+            text.includes("all")
+        ) {
+
+            button.classList.add("active");
+
+        } else if (
+            text.includes(category)
+        ) {
+
+            button.classList.add("active");
         }
     });
 
-    // Show or hide cards
-    cards.forEach(card => {
-        if (category === 'all') {
+
+    // Filter cards
+
+    cards.forEach(function (card) {
+
+        if (category === "all") {
+
             card.style.display = "block";
+
         } else {
-            const cardCategory = card.getAttribute('data-category');
-            card.style.display = (cardCategory === category) ? "block" : "none";
+
+            const cardCategory =
+                card.getAttribute("data-category");
+
+            if (cardCategory === category) {
+
+                card.style.display = "block";
+
+            } else {
+
+                card.style.display = "none";
+            }
         }
     });
 }
 
-// --- TEACHER MODAL & TOAST FUNCTIONS ---
+
+// ======================================================
+// TEACHER MESSAGE MODAL
+// ======================================================
+
 function openMessageModal(teacherName) {
-    const modal = document.getElementById('messageModal');
-    const modalName = document.getElementById('modalTeacherName');
+
+    const modal =
+        document.getElementById("messageModal");
+
+    const modalName =
+        document.getElementById("modalTeacherName");
+
     if (modal && modalName) {
+
         modalName.innerText = teacherName;
+
         modal.style.display = "block";
     }
 }
 
-function closeModal() {
-    const modal = document.getElementById('messageModal');
-    if (modal) modal.style.display = "none";
+
+// ======================================================
+// CLOSE MESSAGE MODAL
+// ======================================================
+
+function closeMessageModal() {
+
+    const modal =
+        document.getElementById("messageModal");
+
+    if (modal) {
+
+        modal.style.display = "none";
+    }
 }
+
+
+// Keep compatibility with existing HTML
+function closeModal() {
+
+    const messageModal =
+        document.getElementById("messageModal");
+
+    const customModal =
+        document.getElementById("customModal");
+
+    if (messageModal) {
+        messageModal.style.display = "none";
+    }
+
+    if (customModal) {
+        customModal.style.display = "none";
+    }
+}
+
+
+// ======================================================
+// SEND TEACHER MESSAGE
+// ======================================================
 
 function sendMessage() {
-    const msgInput = document.getElementById('teacherMessage');
-    const teacherElement = document.getElementById('modalTeacherName');
-    const teacher = teacherElement ? teacherElement.innerText : "Teacher";
 
-    if (!msgInput || msgInput.value.trim() === "") {
-        showToast("Please type a message first!", "❌");
+    const messageInput =
+        document.getElementById("teacherMessage");
+
+    const teacherElement =
+        document.getElementById("modalTeacherName");
+
+    const teacher =
+        teacherElement
+            ? teacherElement.innerText
+            : "Teacher";
+
+
+    if (
+        !messageInput ||
+        messageInput.value.trim() === ""
+    ) {
+
+        showToast(
+            "Please type a message first!",
+            "❌"
+        );
+
         return;
     }
-    
-    closeModal();
-    showToast(`Message sent successfully to ${teacher}!`, "✅");
-    msgInput.value = "";
+
+
+    closeMessageModal();
+
+    showToast(
+        `Message sent successfully to ${teacher}!`,
+        "✅"
+    );
+
+    messageInput.value = "";
 }
 
+
+// ======================================================
+// TOAST MESSAGE
+// ======================================================
+
 function showToast(text, icon) {
-    const toast = document.getElementById('successToast');
-    const toastText = document.getElementById('toastMessage');
-    
+
+    const toast =
+        document.getElementById("successToast");
+
+    const toastText =
+        document.getElementById("toastMessage");
+
+
     if (toast && toastText) {
-        toastText.innerText = icon + " " + text;
-        toast.className = "toast-notification show"; 
-        
-        setTimeout(() => { 
-            toast.className = "toast-notification"; 
+
+        toastText.innerText =
+            icon + " " + text;
+
+        toast.className =
+            "toast-notification show";
+
+
+        setTimeout(function () {
+
+            toast.className =
+                "toast-notification";
+
         }, 3000);
+
     } else {
-        // Fallback if toast elements aren't in HTML
+
         alert(icon + " " + text);
     }
 }
 
-// Global Theme Toggle Logic
+
+// ======================================================
+// THEME TOGGLE
+// ======================================================
+
 function toggleTheme() {
-    const body = document.body;
-    const isDark = body.classList.toggle('dark-mode');
-    
+
+    const body =
+        document.body;
+
+    const isDark =
+        body.classList.toggle("dark-mode");
+
+
     // Save preference
-    localStorage.setItem('uei-theme', isDark ? 'dark' : 'light');
-    
-    // Update button text if it exists
-    const btn = document.getElementById('tBtn');
-    if(btn) btn.innerText = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+
+    localStorage.setItem(
+        "uei-theme",
+        isDark ? "dark" : "light"
+    );
+
+
+    // Change button text
+
+    const button =
+        document.getElementById("tBtn");
+
+    if (button) {
+
+        button.innerText =
+            isDark
+                ? "☀️ Light Mode"
+                : "🌙 Dark Mode";
+    }
 }
 
-// Load preference on every page
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('uei-theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        const btn = document.getElementById('tBtn');
-        if(btn) btn.innerText = "☀️ Light Mode";
-    }
-});
-// --- GLOBAL MODAL CONTROLLER ---
-function showProfessionalModal(title, message, icon = "🚀") {
-    const modal = document.getElementById('customModal');
+
+// ======================================================
+// PROFESSIONAL MODAL
+// ======================================================
+
+function showProfessionalModal(
+    title,
+    message,
+    icon = "🚀"
+) {
+
+    const modal =
+        document.getElementById("customModal");
+
+
     if (modal) {
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = message;
-        document.getElementById('modalIcon').innerText = icon;
-        modal.style.display = 'flex';
+
+        const titleElement =
+            document.getElementById("modalTitle");
+
+        const messageElement =
+            document.getElementById("modalMessage");
+
+        const iconElement =
+            document.getElementById("modalIcon");
+
+
+        if (titleElement) {
+            titleElement.innerText = title;
+        }
+
+        if (messageElement) {
+            messageElement.innerText = message;
+        }
+
+        if (iconElement) {
+            iconElement.innerText = icon;
+        }
+
+
+        modal.style.display = "flex";
+
     } else {
+
         alert(icon + " " + message);
-    }
-}
-
-function closeModal() {
-    const modal = document.getElementById('customModal');
-    if (modal) modal.style.display = 'none';
-}
-
-// --- LOGIN FUNCTION ---
-function loginCheck(event) {
-    if (event) event.preventDefault(); 
-    const loginUser = document.getElementById('loginUser');
-    const usernameInput = loginUser ? loginUser.value : "";
-
-    // Specific logic for your student 'harshi'
-    if (usernameInput.trim().toLowerCase() === "harshi") {
-        localStorage.setItem("studentName", "harshi");
-        window.location.href = "index.html"; 
-    } else if (loginUser) {
-        loginUser.placeholder = "Invalid User!";
-        loginUser.style.borderColor = "#ef4444";
-    }
-}
-
-// --- INITIALIZE ALL PAGES ---
-document.addEventListener("DOMContentLoaded", () => {
-    
-    // 1. Display Logged-in User
-    const user = localStorage.getItem("studentName");
-    const display = document.getElementById("studentNameDisplay") || document.getElementById("studentName");
-    if (user && display) {
-        display.innerText = "👤 " + user;
-    }
-
-    // 2. Assignment Form Logic
-    const assignmentForm = document.getElementById("assignmentForm");
-    if (assignmentForm) {
-        assignmentForm.addEventListener("submit", (e) => {
-            e.preventDefault(); 
-            showProfessionalModal("Assignment Uploaded", "Your work has been submitted to the faculty.", "✅");
-            assignmentForm.reset(); 
-        });
-    }
-
-    // 3. Career Portal / Placement Logic
-    const placementForm = document.getElementById("placementForm") || document.querySelector('.confirm-btn');
-    if (placementForm && !placementForm.onclick) { // Only if not using inline onclick
-        placementForm.addEventListener("click", (e) => {
-            e.preventDefault();
-            showProfessionalModal("Application Sent!", "Google has received your technical profile.", "🚀");
-        });
-    }
-});
-
-// --- LOGOUT ---
-function logout() {
-    if(confirm("Are you sure you want to logout?")) {
-        localStorage.removeItem("studentName");
-        window.location.href = "login.html";
     }
 }
