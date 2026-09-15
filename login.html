@@ -1,179 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login | UEI Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+          rel="stylesheet">
+
     <style>
-        /* --- PROFESSIONAL DARK THEME --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0b1120; /* Deep navy background */
+            background-color: #0b1120;
             color: #f1f5f9;
+
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+
+            min-height: 100vh;
         }
 
         .login-container {
             width: 100%;
             max-width: 420px;
-            background: #1e293b; /* Card color */
+
+            background: #1e293b;
+
             padding: 50px 40px;
+
             border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.5);
+
             text-align: center;
+
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .login-header h1 {
-            color: #1abc9c; /* Signature Teal */
+            color: #1abc9c;
+
             font-size: 2.8rem;
+
             margin-bottom: 8px;
+
             letter-spacing: -1px;
         }
 
         .login-header p {
             color: #94a3b8;
+
             font-size: 0.95rem;
+
             line-height: 1.5;
+
             margin-bottom: 35px;
         }
 
         .login-header span {
+            display: inline-block;
+
             background: rgba(26, 188, 156, 0.1);
+
             color: #1abc9c;
+
             padding: 4px 12px;
+
             border-radius: 20px;
+
             font-size: 0.75rem;
+
             font-weight: 800;
+
             text-transform: uppercase;
         }
 
-        /* --- FORM STYLING --- */
         .input-group {
             text-align: left;
+
             margin-bottom: 22px;
         }
 
         label {
             display: block;
+
             margin-bottom: 10px;
+
             color: #cbd5e1;
+
             font-size: 0.85rem;
-            font-weight: 500;
+
+            font-weight: 600;
         }
 
         input {
             width: 100%;
+
             padding: 14px 16px;
+
             background: #0f172a;
+
             border: 2px solid #334155;
+
             color: white;
+
             border-radius: 12px;
+
             outline: none;
+
             font-size: 1rem;
+
             transition: all 0.3s ease;
         }
 
         input:focus {
             border-color: #1abc9c;
+
             background: #1e293b;
-            box-shadow: 0 0 0 4px rgba(26, 188, 156, 0.1);
+
+            box-shadow:
+                0 0 0 4px rgba(26, 188, 156, 0.1);
         }
 
         .login-btn {
             width: 100%;
+
             padding: 16px;
+
             background: #1abc9c;
+
             color: white;
+
             border: none;
+
             border-radius: 12px;
+
             font-weight: 800;
+
             cursor: pointer;
+
             font-size: 1.1rem;
+
             margin-top: 15px;
+
             transition: 0.3s;
         }
 
         .login-btn:hover {
             background: #16a085;
+
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(26, 188, 156, 0.2);
+
+            box-shadow:
+                0 10px 20px rgba(26, 188, 156, 0.2);
         }
 
-        .login-btn:active { transform: translateY(0); }
+        .login-btn:disabled {
+            opacity: 0.7;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
 
         .footer-text {
             margin-top: 30px;
+
             font-size: 0.8rem;
+
             color: #64748b;
+
             font-weight: 500;
         }
+
+        .error-message {
+            margin-top: 15px;
+
+            color: #ff6b6b;
+
+            font-size: 0.85rem;
+
+            display: none;
+        }
+
     </style>
+
 </head>
+
 <body>
 
     <div class="login-container">
+
         <div class="login-header">
+
             <h1>UEI</h1>
-            <p>Unified Educational Interface <br>
-               <span>Student Portal v2.0</span>
+
+            <p>
+                Unified Educational Interface
+                <br>
+
+                <span>Student Portal v2.0</span>
             </p>
+
         </div>
 
-        <form id="loginForm" onsubmit="handleLogin(event)">
+
+        <form id="loginForm">
+
             <div class="input-group">
-                <label>Username</label>
-                <input type="text" id="username" placeholder="e.g. harshi" required autocomplete="username">
-            </div>
-            
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="e.g. harsh"
+                    required
+                    autocomplete="username"
+                >
+
             </div>
 
-            <button type="submit" class="login-btn" id="loginBtn">Login to Portal</button>
+
+            <div class="input-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                    autocomplete="current-password"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="login-btn"
+                id="loginBtn"
+            >
+                Login to Portal
+            </button>
+
+            <div
+                id="errorMessage"
+                class="error-message"
+            ></div>
+
         </form>
 
-        <p class="footer-text">Protected access for students and faculty</p>
+
+        <p class="footer-text">
+            Protected access for students and faculty
+        </p>
+
     </div>
 
-    <script>
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const userField = document.getElementById('username');
-            const passField = document.getElementById('password');
-            const loginBtn = document.getElementById('loginBtn');
-            
-            const username = userField.value.trim().toLowerCase();
-            const password = passField.value;
 
-            // --- SECURITY CHECK FOR HARSHI ---
-            if (username === "harshi" && password === "admin123") {
-                // Save name so placement portal can auto-fill it
-                sessionStorage.setItem('loggedInUser', "Harshi");
-                
-                // Visual feedback
-                loginBtn.innerText = "Welcome, Harshi!";
-                loginBtn.style.background = "#27ae60";
-                
-                setTimeout(() => {
-                    window.location.href = "index.html"; 
-                }, 800);
-            } else {
-                // Shake effect or Alert
-                alert("❌ Access Denied: Incorrect username or password.");
-                passField.value = "";
-                passField.focus();
-            }
-        }
+    <script>
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+
+                const username =
+                    document
+                        .getElementById("username")
+                        .value
+                        .trim();
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+                const loginBtn =
+                    document.getElementById("loginBtn");
+
+                const errorMessage =
+                    document.getElementById("errorMessage");
+
+
+                errorMessage.style.display = "none";
+
+                loginBtn.disabled = true;
+
+                loginBtn.innerText = "Logging in...";
+
+
+                try {
+
+                    const response = await fetch(
+                        "http://127.0.0.1:5001/api/login",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                username: username,
+                                password: password
+                            })
+                        }
+                    );
+
+
+                    const data = await response.json();
+
+
+                    console.log("Login response:", data);
+
+
+                    if (response.ok && data.success) {
+
+                        sessionStorage.setItem(
+                            "loggedInUser",
+                            data.username
+                        );
+
+
+                        loginBtn.innerText =
+                            "Welcome, Harsh!";
+
+                        loginBtn.style.background =
+                            "#27ae60";
+
+
+                        setTimeout(function() {
+
+                            window.location.href =
+                                "index.html";
+
+                        }, 700);
+
+
+                    } else {
+
+                        errorMessage.innerText =
+                            "❌ " +
+                            (data.message ||
+                            "Invalid username or password.");
+
+                        errorMessage.style.display =
+                            "block";
+
+
+                        loginBtn.disabled = false;
+
+                        loginBtn.innerText =
+                            "Login to Portal";
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Login error:",
+                        error
+                    );
+
+
+                    errorMessage.innerText =
+                        "❌ Cannot connect to backend. " +
+                        "Make sure the server is running on port 5001.";
+
+                    errorMessage.style.display =
+                        "block";
+
+
+                    loginBtn.disabled = false;
+
+                    loginBtn.innerText =
+                        "Login to Portal";
+                }
+
+            });
+
     </script>
+
 </body>
+
 </html>
