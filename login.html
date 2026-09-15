@@ -283,7 +283,6 @@
 
                 event.preventDefault();
 
-
                 const username =
                     document
                         .getElementById("username")
@@ -311,8 +310,9 @@
 
                 try {
 
+                    // DEPLOYED RENDER BACKEND
                     const response = await fetch(
-                        "http://127.0.0.1:5001/api/login",
+                        "https://unified-educational-interface.onrender.com/api/login",
                         {
                             method: "POST",
 
@@ -330,29 +330,42 @@
 
                     const data = await response.json();
 
-
                     console.log("Login response:", data);
 
 
-                    if (response.ok && data.success) {
+                    // LOGIN SUCCESS
+                    if (
+                        response.ok &&
+                        (
+                            data.success === true ||
+                            data.message === "Login Successful"
+                        )
+                    ) {
+
+                        // Save logged-in user
+                        localStorage.setItem(
+                            "studentName",
+                            username
+                        );
 
                         sessionStorage.setItem(
                             "loggedInUser",
-                            data.username
+                            username
                         );
 
 
                         loginBtn.innerText =
-                            "Welcome, Harsh!";
+                            "Welcome, " + username + "!";
 
                         loginBtn.style.background =
                             "#27ae60";
 
 
+                        // Open dashboard
                         setTimeout(function() {
 
                             window.location.href =
-                                "index.html";
+                                "student.html";
 
                         }, 700);
 
@@ -361,8 +374,10 @@
 
                         errorMessage.innerText =
                             "❌ " +
-                            (data.message ||
-                            "Invalid username or password.");
+                            (
+                                data.message ||
+                                "Invalid username or password."
+                            );
 
                         errorMessage.style.display =
                             "block";
@@ -374,6 +389,7 @@
                             "Login to Portal";
                     }
 
+
                 } catch (error) {
 
                     console.error(
@@ -384,7 +400,7 @@
 
                     errorMessage.innerText =
                         "❌ Cannot connect to backend. " +
-                        "Make sure the server is running on port 5001.";
+                        "Please try again.";
 
                     errorMessage.style.display =
                         "block";
