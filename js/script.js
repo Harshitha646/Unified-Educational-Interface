@@ -1,48 +1,49 @@
-function loginCheck(){
+function loginCheck() {
 
-const username = document.querySelector('input[type="text"]').value
-const password = document.querySelector('input[type="password"]').value
+    const username = document.querySelector('input[type="text"]').value;
+    const password = document.querySelector('input[type="password"]').value;
 
-fetch("https://unified-educational-interface.onrender.com/api/login",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-username:username,
-password:password
-})
-})
-.then(res => res.json())
-.then(data => {
+    fetch("https://unified-educational-interface.onrender.com/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
 
-if(data.message === "Login Successful"){
+        if (data.message === "Login Successful") {
 
-localStorage.setItem("studentName", username)
+            localStorage.setItem("studentName", username);
+            window.location.href = "student.html";
 
-window.location.href = "student.html"
+        } else {
 
-}else{
+            alert("Invalid Login");
 
-alert("Invalid Login")
+        }
 
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Unable to connect to server");
+    });
+
+    return false;
 }
 
-})
 
-return false
-
+function logout() {
+    localStorage.removeItem("studentName");
+    window.location.href = "login.html";
 }
 
 
-
-
-function logout(){
-localStorage.removeItem("studentName");
-window.location.href = "login.html";
-}
-
-function submitFeedback(event){
+function submitFeedback(event) {
     event.preventDefault();
     alert("Thank you! Your feedback has been submitted.");
     event.target.reset();
@@ -53,17 +54,23 @@ function submitFeedback(event){
 
 const studentName = localStorage.getItem("studentName");
 
-if(studentName){
-document.getElementById("studentName").innerText = "👤 " + studentName;
+if (studentName) {
+
+    const studentElement = document.getElementById("studentName");
+
+    if (studentElement) {
+        studentElement.innerText = "👤 " + studentName;
+    }
 }
+
 
 const name = localStorage.getItem("studentName");
 
-if(name){
-const welcome = document.getElementById("welcomeUser");
+if (name) {
 
-if(welcome){
-welcome.innerText = "Welcome " + name + " 👋";
-}
-}
+    const welcome = document.getElementById("welcomeUser");
 
+    if (welcome) {
+        welcome.innerText = "Welcome " + name + " 👋";
+    }
+}
