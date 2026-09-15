@@ -3,7 +3,7 @@ function loginCheck(){
 const username = document.querySelector('input[type="text"]').value
 const password = document.querySelector('input[type="password"]').value
 
-fetch("http://localhost:5000/login",{
+fetch("https://unified-educational-interface.onrender.com/api/login",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
